@@ -1,0 +1,13 @@
+,Type,Montage,PlayRate
+1,BackStep,/Script/Engine.AnimMontage'/Game/Character/Montage/Common/Player/BackStep_Montage.BackStep_Montage',1
+2,Roll_F,/Script/Engine.AnimMontage'/Game/Character/Montage/Common/Player/Roll_Forward_Montage.Roll_Forward_Montage',1
+3,Roll_R,/Script/Engine.AnimMontage'/Game/Character/Montage/Common/Player/Roll_Right_Montage.Roll_Right_Montage',1
+4,Roll_L,/Script/Engine.AnimMontage'/Game/Character/Montage/Common/Player/Roll_Left_Montage.Roll_Left_Montage',1
+5,Roll_B,/Script/Engine.AnimMontage'/Game/Character/Montage/Common/Roll_Backward_Montage.Roll_Backward_Montage',1
+6,Roll_FR,/Script/Engine.AnimMontage'/Game/Character/Montage/Common/Player/Roll_ForwardRight_Montage.Roll_ForwardRight_Montage',1
+7,Roll_FL,/Script/Engine.AnimMontage'/Game/Character/Montage/Common/Player/Roll_ForwardLeft_Montage.Roll_ForwardLeft_Montage',1
+8,Roll_BR,/Script/Engine.AnimMontage'/Game/Character/Montage/Common/Player/Roll_BackwardRight_Montage.Roll_BackwardRight_Montage',1
+9,Roll_BL,/Script/Engine.AnimMontage'/Game/Character/Montage/Common/Player/Roll_BackwardLeft_Montage.Roll_BackwardLeft_Montage',1
+10,Dead,/Script/Engine.AnimMontage'/Game/Character/Montage/HitandDead/Plyaer/Player_DeadFall_Montage.Player_DeadFall_Montage',1
+11,HitAndDefence,/Script/Engine.AnimMontage'/Game/Character/Montage/Defence/Player/Blocking_Hit_Montage.Blocking_Hit_Montage',1
+12,HitLand,/Script/Engine.AnimMontage'/Game/Character/Montage/HitandDead/Plyaer/FallDamage_Montage.FallDamage_Montage',1

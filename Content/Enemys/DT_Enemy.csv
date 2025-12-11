@@ -1,0 +1,4 @@
+,Type,Montage,PlayRate
+1,Dead,/Script/Engine.AnimMontage'/Game/Character/Montage/HitandDead/Plyaer/Enemy_DeadFall_Montage.Enemy_DeadFall_Montage',1
+2,HitLand,/Script/Engine.AnimMontage'/Game/Character/Montage/HitandDead/Plyaer/FallDamage_Montage.FallDamage_Montage',1
+3,KoandGetup,/Script/Engine.AnimMontage'/Game/Character/Montage/HitandDead/Plyaer/Ko_Montage.Ko_Montage',1
