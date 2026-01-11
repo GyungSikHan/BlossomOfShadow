@@ -19,7 +19,7 @@
     - [↳ Weapon Asset](#-weapon-asset)
   - [Skills](#skills)
     - [↳ Skill](#-skill)
-    - [↳ Skill Aura, ACAura](#-skill-aura-acaura)
+    - [↳ Skill Aura, ACAura](#-skill-aura,-acaura)
     - [↳ BackHole](#-backhole)
     - [↳ Skill AnimSpawn, Around](#-skill-animspawn-around)
     - [↳ Skill Bow Zooming, AnimData](#-skill-bow-zomming-animdata)
