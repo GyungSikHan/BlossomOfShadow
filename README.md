@@ -1,3 +1,26 @@
+# **Blossom Of Shadow**
+
+# ⚡ 30초 요약 (TL;DR)
+
+- **Blossom of Shadow**: Unreal Engine 5.4 기반 3D 액션/전투 중심 개인 프로젝트
+- **핵심 구현**
+  1) **AI 전투**: Behavior Tree + Blackboard 기반의 추적/공격/상태 전환 로직 구현  
+  2) **전투 시스템**: 캐릭터 전투 흐름(공격/피격/사망 등)과 입력 처리 구조화  
+  3) **프로젝트 구조화**: 시스템 단위로 코드를 분리하고, 기능별로 문서/링크로 정리
+- **가장 어려웠던 점 → 해결**
+  - 전투 상황에서 AI의 상태 전환(탐색↔추적↔공격)이 흔들리는 문제를  
+    **조건(Decorator) / 서비스 업데이트 주기 / 거리·시야 판정**을 기준으로 재정의해 안정화
+- **바로 보기**
+  - 📌 시스템 설명/코드 링크: 아래 `Implementation` 섹션 참고
+
+# 🎥 게임 플레이 영상
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=sI_5kmsh7MY">
+    <img src="image/image-16.png" width="1000">
+  </a>
+</p>
+
+
 # 📌 프로젝트 소개
 
 “Blossom of Shadows”는 언리얼 엔진 기반으로 제작된 RPG 게임으로, 광활한 맵에서 외계에 적들을 물리치고 포탈을 넘어 외계 행성의 적을 쓰러트리는 이야기를 담고 있으며, 플레이어는 수많은 적들을 물리치고 살아남아 세상을 지켜내야 합니다.
@@ -26,7 +49,7 @@
 <table>
     <tr>
         <td align="center">
-            <img src="image/image 193.png" width="400"><br>
+            <img src="image/image17.png" width="400"><br>
             <em>AI Perception</em>
         </td>
 	</tr>
@@ -93,9 +116,12 @@ void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
             </td>
 	</tr>
 </table>
+
 - [EQS](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/BehaviorTree/EQS_Context/CEQS_Context_AttackTarget.cpp)
+
 	- Target이 되는 캐릭터를 ContextData에 설정하여 EQS 쿼리의 중심으로 사용하는 클래스
 	- Testing Pawn을 사용하기 위해 if 문을 사용하여 Actor가 nullptr이 아닐 때 Player Start를 ContextData에 설정
+	
 - 근거리 EQS
 	<table>
             <tr>
@@ -2393,9 +2419,3 @@ void ACDrop_Item::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompone
 
 # **Retrospective (느낀점)**
 
-# 게임 플레이 영상
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=sI_5kmsh7MY">
-    <img src="image/image-16.png" width="1000">
-  </a>
-</p>
