@@ -9,7 +9,7 @@
 - [🖼 In-Game Screenshot](#-in-game-screenshot)
 - [🎮 Core System Implementation](#core-system-implementation)
   - [AI](#ai)
-    - [↳ AI Controller](#ai-controller)
+    - [↳ AI Controller](####ai-controller)
     - [↳ BehaviorTree](#behaviortree)
     - [↳ EQS](#eqs)
   - [Weapon](#weapon)
