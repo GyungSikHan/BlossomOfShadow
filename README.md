@@ -49,10 +49,9 @@
 <table>
     <tr>
         <td align="center">
-            <img src="https://github.com/user-attachments/assets/19f0c1e1-ac58-4bc6-acc7-f232d8106f47" width="400"><br>
+            <img src="image/imgae 193.png" width="400"><br>
             <em>AI Perception</em>
-        </td>
-	</tr>
+		</td>
 </table>
 
 
