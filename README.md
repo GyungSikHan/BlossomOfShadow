@@ -16,7 +16,7 @@
 # 🎥 게임 플레이 영상
 <p align="center">
   <a href="https://www.youtube.com/watch?v=sI_5kmsh7MY">
-    <img src="image/image-16.png" width="1000">
+    <img src="Image/mqdefault.webp" width="1000">
   </a>
 </p>
 
@@ -49,7 +49,7 @@
 <table>
     <tr>
         <td align="center">
-            <img src="image/image17.png" width="400"><br>
+            <img src="image/image 193.png" width="400"><br>
             <em>AI Perception</em>
         </td>
 	</tr>
@@ -121,7 +121,7 @@ void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 
 	- Target이 되는 캐릭터를 ContextData에 설정하여 EQS 쿼리의 중심으로 사용하는 클래스
 	- Testing Pawn을 사용하기 위해 if 문을 사용하여 Actor가 nullptr이 아닐 때 Player Start를 ContextData에 설정
-	
+
 - 근거리 EQS
 	<table>
             <tr>
