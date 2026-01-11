@@ -272,7 +272,7 @@ void UCEQS_Context_AttackTarget::ProvideContext(FEnvQueryInstance& QueryInstance
 
 ### ✔ 구현 내용
 
-#### ↳  [Attachment](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/CAttachment.cpp)
+#### ↳ [Attachment](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/CAttachment.cpp)
 - 무기들은 이 클래스를 상속받아 생성되며, 생성된 자식 클래스들의 Mesh와 장착 방식만 변경하여 사용 가능
 - 다양한 종류의 무기를 더 간단하게 만들 수 있도록 구현
 <table>
@@ -611,7 +611,7 @@ bool UCDoAction_Warp::GetCursorLocationAndRotation(FVector& OutLocation, FRotato
 }
 ```
 
-#### ↳  [Weapon Asset](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/CWeaponAsset.cpp)
+#### ↳ [Weapon Asset](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/CWeaponAsset.cpp)
 - CWeaponAsset 클래스는 UDataAsset 클래스를 상속받아 만든 클래스로, 이를 사용하여 에디터에서 무기에 대한 값을 쉽게 추가하거나 변경할 수 있도록 구현
 - CAttachment, CEquipment, CDoAction, HitData, CSkills 클래스 등에 구현된 델리게이트를 연결하여 에디터 내에서 정보들을 변경할 때 적용될 수 있도록 구현
 - 이렇게 WeaponAsset을 만들어 무기를 쉽고 빠르게 추가하고, 무기에 대한 정보도 빠르게 변경할 수 있어 범용성이 높은 클래스
