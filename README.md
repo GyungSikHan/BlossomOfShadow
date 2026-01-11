@@ -1,5 +1,11 @@
 # **Blossom Of Shadow**
 
+## 📌 Table of Contents
+
+- [⚡ 30초 요약 (TL;DR)](#-30초-요약-tldr)
+- [🎥 게임 플레이 영상](#-게임-플레이-영상)
+- [📌 프로젝트 소개](#-프로젝트-소개)
+
 # ⚡ 30초 요약 (TL;DR)
 
 - **Blossom of Shadow**: Unreal Engine 5.4 기반 3D 액션/전투 중심 개인 프로젝트
@@ -19,7 +25,6 @@
     <img src="Image/mqdefault.webp" width="1000">
   </a>
 </p>
-
 
 # 📌 프로젝트 소개
 
