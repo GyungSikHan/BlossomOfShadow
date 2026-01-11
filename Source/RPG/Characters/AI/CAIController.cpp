@@ -27,9 +27,9 @@ ACAIController::ACAIController()
 	Sight->LoseSightRadius = 800;
 	Sight->PeripheralVisionAngleDegrees = 60;
 	Sight->SetMaxAge(3);
-	Sight->DetectionByAffiliation.bDetectEnemies = true;//적감지
-	Sight->DetectionByAffiliation.bDetectNeutrals = true;//중립감지
-	Sight->DetectionByAffiliation.bDetectFriendlies = true;//팀 감지
+	Sight->DetectionByAffiliation.bDetectEnemies = true;
+	Sight->DetectionByAffiliation.bDetectNeutrals = true;
+	Sight->DetectionByAffiliation.bDetectFriendlies = true;
 	
 	Perception->ConfigureSense(*Sight);
 
@@ -46,11 +46,6 @@ ACAIController::ACAIController()
 	Damage = CreateDefaultSubobject<UAISenseConfig_Damage>("Damage");
 	Damage->SetMaxAge(5);
 	Perception->ConfigureSense(*Damage);
-
-	//Team = CreateDefaultSubobject<UAISenseConfig_Team>("Team");
-	//Perception->ConfigureSense(*Team);
-	
-	//Perception->SetDominantSense(*Sight->GetSenseImplementation());
 }
 
 void ACAIController::BeginPlay()
@@ -66,7 +61,6 @@ void ACAIController::BeginPlay()
 
 		DrawDebugCylinder(GetPawn()->GetWorld(), start, end, Sight->SightRadius, 10, FColor::Red, false, 3);
 	}
-	//Perception->OnTargetPerceptionUpdated.AddDynamic(this, &ACAIController::OnTargetPerceptionUpdated);
 }
 
 void ACAIController::OnPossess(APawn* InPawn)
@@ -94,35 +88,6 @@ void ACAIController::OnUnPossess()
 {
 	Super::OnUnPossess();
 }
-
-//void ACAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
-//{
-//	TArray<AActor*> actors;
-//	TSubclassOf<UAISense> aiSense;
-//	AAIController* controller = Cast<AAIController>(Actor->GetInstigatorController());
-//	
-//
-//	aiSense = UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), Stimulus);
-//
-//	if (aiSense == UAISense_Hearing::StaticClass() || aiSense == UAISense_Damage::StaticClass())
-//	{
-//		bPoint = true;
-//		Behavior->SetPointOfInterestLocation(Stimulus.StimulusLocation);
-//		return;
-//	}
-//	else if (aiSense == UAISense_Sight::StaticClass())
-//		Perception->GetCurrentlyPerceivedActors(aiSense, actors);
-//
-//	if (actors.Num() <= 0)
-//	{
-//		Blackboard->SetValueAsObject("Target", nullptr);
-//		return;
-//	}
-//
-//	for (AActor* actor : actors)
-//		Blackboard->SetValueAsObject("Target", actor);
-//}
-
 bool ACAIController::GetPoint()
 {
 	return bPoint;
@@ -146,8 +111,6 @@ void ACAIController::Tick(float DeltaTime)
 
 void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-	/*ACEnemy_AI* ai{};
-	ACPlayer* player;*/
 	TArray < AActor* > actors;
 	Perception->GetCurrentlyPerceivedActors(nullptr, actors);
 
@@ -161,16 +124,7 @@ void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 	{
 		ACCharacter* character = Cast<ACCharacter>(actor);
 		float team = character->GetTeam();
-		/*ai = Cast<ACEnemy_AI>(actor);
-		if (ai == nullptr)
-		{
-			player = Cast<ACPlayer>(actor);
-			if (player != nullptr)
-				team = player->GetTeam();
-		}
-		else
-			team = ai->GetTeamID();*/
-
+		
 		if (team != MyTeam)
 		{
 			Behavior->SetTeamID(team);
@@ -181,133 +135,3 @@ void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-////void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& updatedActors)
-////{
-////	TArray<AActor*> actors;
-////	TSubclassOf<UAISense> aiSense;
-////
-////	for (AActor* actor : updatedActors)
-////	{
-////		FActorPerceptionBlueprintInfo info;
-////		if (Perception->GetActorsPerception(actor, info) == true)
-////		{
-////			for (FAIStimulus stimulu : info.LastSensedStimuli)
-////			{
-////				aiSense = UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), stimulu);
-////				if (aiSense == UAISense_Sight::StaticClass())
-////					Perception->GetCurrentlyPerceivedActors(aiSense, actors);
-////				//else if (aiSense == UAISense_Hearing::StaticClass())
-////				//{
-////				//	bPoint = true;
-////				//	PointLocation = stimulu.StimulusLocation;
-////				//}
-////				//else if (aiSense == UAISense_Damage::StaticClass())
-////				//	Perception->GetCurrentlyPerceivedActors(aiSense, actors);
-////			}
-////		}
-////	}
-////
-////	if(actors.Num() <= 0)
-////	{
-////		Blackboard->SetValueAsObject("Target", nullptr);
-////		return;
-////	}
-////	for (AActor* a : actors)
-////		Blackboard->SetValueAsObject("Target", a);
-////	
-////}
-//
-////void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& updatedActors)
-////{
-////	//TArray<AActor*> actors;
-////	//
-////	//Perception->GetCurrentlyPerceivedActors(nullptr, actors);
-////
-////	//float myTeam = Behavior->GetMyTeam();
-////
-////	//if(actors.Num() <= 0)
-////	//{
-////	//	Blackboard->SetValueAsObject("Target", nullptr);
-////	//	return;
-////	//}
-////
-////	//for (AActor* a : actors)
-////	//{
-////	//	//float team = Behavior->GetTeam(Cast<ACharacter>(a));
-////	//	//if((myTeam != team && team != 0))
-////	//	//{
-////	//	//}
-////
-////	//		Blackboard->SetValueAsObject("Target", a);
-////	//}
-////
-////	////float team = Behavior->GetTeam(Cast<ACharacter>(actors[0]));
-////	////if ((myTeam != team && team != 0) || Damage->IsEnabled() == true)
-////	////{
-////	////	Blackboard->SetValueAsObject("Target", actors[0]);
-////	////	return;
-////	////}
-////
-////
-////
-////	TArray < AActor* > actors;
-////	Perception->GetCurrentlyPerceivedActors(nullptr, actors);
-////
-////	if (actors.Num() > 0)
-////	{
-////		//CLog::Log(actors[0]->GetName());
-////		Blackboard->SetValueAsObject("Target", actors[0]);
-////
-////		return;
-////	}
-////
-////	Blackboard->SetValueAsObject("Target", nullptr);
-////	
-////}
-//
-//void ACAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
-//{
-//	UKismetSystemLibrary::PrintString(GetOwner(), Actor->GetName());
-//
-//	//ACharacter* other = Cast<ACharacter>(Actor);
-//	//float otherTeam = Behavior->GetTeam(other);
-//
-//	//if (other == nullptr)
-//	//	return;
-//	//else if (otherTeam == MyTeam || otherTeam == 0)
-//	//	return;
-//	
-//	TArray<AActor*> actors;
-//	TSubclassOf<UAISense> aiSense;
-//
-//	aiSense = UAIPerceptionSystem::GetSenseClassForStimulus(GetWorld(), Stimulus);
-//	bPoint = true;
-//
-//	if (aiSense == UAISense_Hearing::StaticClass())
-//		PointLocation = Stimulus.StimulusLocation;
-//	else if (aiSense == UAISense_Damage::StaticClass())
-//		PointLocation = Stimulus.StimulusLocation;
-//	else if(aiSense == UAISense_Sight::StaticClass())
-//		Perception->GetCurrentlyPerceivedActors(aiSense, actors);
-//
-//	if (actors.Num() <= 0)
-//	{
-//		Blackboard->SetValueAsObject("Target", nullptr);
-//		return;
-//	}
-//	for (AActor* a : actors)
-//		Blackboard->SetValueAsObject("Target", a);
-//}
