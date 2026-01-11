@@ -9,14 +9,18 @@
 - [🖼 In-Game Screenshot](#-in-game-screenshot)
 - [Core System Implementation](#core-system-implementation)
   - [AI](#ai)
-    - [설계 의도](#-설계-의도)
-    - [구현 내용](#-구현-내용)
+    - [↳ AI Controller](#AI-Controller)
+    - [↳ BehaviorTree](#BehaviorTree)
+    - [↳ EQS](#EQS)
   - [Weapon](#weapon)
-    - [설계 의도](#-설계-의도-1)
-    - [구현 내용](#-구현-내용-1)
+    - [↳ Attachment](#attachment)
+    - [↳ Equipment](#equipment)
+    - [↳ BasicCombo](#basic-combo)
+    - [↳ Weapon Asset](#weapon-asset)
   - [Skills](#skills)
-    - [설계 의도](#-설계-의도-2)
-    - [구현 내용](#-구현-내용-2)
+    - [↳ Skill](#skill)
+    - [↳ Skill Aura, ACAura](#skill-aura,-acaura)
+    - [↳ BackHole](#backhole)
   - [Component](#component)
     - [설계 의도](#-설계-의도-3)
     - [구현 내용](#-구현-내용-3)
@@ -41,8 +45,8 @@
   2) **전투 시스템**: 캐릭터 전투 흐름(공격/피격/사망 등)과 입력 처리 구조화  
   3) **프로젝트 구조화**: 시스템 단위로 코드를 분리하고, 기능별로 문서/링크로 정리
 - **가장 어려웠던 점 → 해결**
-  - 전투 상황에서 AI의 상태 전환(탐색↔추적↔공격)이 흔들리는 문제를  
-    **조건(Decorator) / 서비스 업데이트 주기 / 거리·시야 판정**을 기준으로 재정의해 안정화
+  - AirCombo시 공중에 떠있지 못하는 문제 
+    일정 거리 안에서 피격되면 공중으로 조금씩 띄우도록 보간
 - **바로 보기**
   - 📌 시스템 설명/코드 링크: 아래 `Implementation` 섹션 참고
 
@@ -67,7 +71,7 @@
 
 ## 🖼 In-Game Screenshot
 
-# **Core System Implementation**
+# 🎮 **Core System Implementation**
 
 ## AI
 ### ✔ 설계 의도
@@ -148,10 +152,10 @@ void ACAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 	</tr>
 </table>
 
-- [EQS](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/BehaviorTree/EQS_Context/CEQS_Context_AttackTarget.cpp)
+### ↳ [EQS](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/BehaviorTree/EQS_Context/CEQS_Context_AttackTarget.cpp)
 
-	- Target이 되는 캐릭터를 ContextData에 설정하여 EQS 쿼리의 중심으로 사용하는 클래스
-	- Testing Pawn을 사용하기 위해 if 문을 사용하여 Actor가 nullptr이 아닐 때 Player Start를 ContextData에 설정
+- Target이 되는 캐릭터를 ContextData에 설정하여 EQS 쿼리의 중심으로 사용하는 클래스
+- Testing Pawn을 사용하기 위해 if 문을 사용하여 Actor가 nullptr이 아닐 때 Player Start를 ContextData에 설정
 
 - 근거리 EQS
 	<table>
@@ -255,7 +259,7 @@ void UCEQS_Context_AttackTarget::ProvideContext(FEnvQueryInstance& QueryInstance
 
 ### ✔ 구현 내용
 
-#### ↳  [ACAttachment](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/CAttachment.cpp)
+#### ↳  [Attachment](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/CAttachment.cpp)
 - 무기들은 이 클래스를 상속받아 생성되며, 생성된 자식 클래스들의 Mesh와 장착 방식만 변경하여 사용 가능
 - 다양한 종류의 무기를 더 간단하게 만들 수 있도록 구현
 <table>
@@ -333,7 +337,7 @@ void ACAttachment::OffCollisions()
 }
 ```
 
-#### ↳ [ACEquipment](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/CEquipment.cpp)
+#### ↳ [Equipment](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/CEquipment.cpp)
 - 캐릭터에서 CWeaponComponent로 무기 장착 명령을 내리면, CEquipment 클래스의 함수들이 호출
 - 이때, CEquipment 클래스 함수에 따라 각각의 델리게이트들을 전달하여, CWeaponAsset 클래스에서 ACAttachment 클래스에 알맞게 연결
 - 각 무기들은 장착되기 전에 보일지 안 보일지를 블루프린트에서 설정할 수 있도록 하여, 일부 무기만 장착 전에도 보이게 구현
@@ -728,7 +732,7 @@ void UCWeaponAsset::PostEditChangeChainProperty(FPropertyChangedChainEvent& Prop
 
 ### ✔ 구현 내용
 
-#### ↳ [UCSkill](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills.h)
+#### ↳ [Skill](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills.h)
 - CSkills 클래스는 플레이어가 스킬 버튼을 누르면 WeaponComponent에 의해 호출되는 클래스
 - 모든 스킬은 CSkills 클래스를 상속받아 생성
 - 스킬은 Skill_Pressed()와 Skill_Released() 함수를 두어, 버튼을 눌렀을 때와 버튼을 땠을 때 각각 기능을 구현
@@ -768,7 +772,7 @@ public:
 ...
 };
 ```
-#### ↳ [USkill Aura](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Hammer01.cpp), [ACAura](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Add_On/CAura.cpp)
+#### ↳ [Skill Aura](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Hammer01.cpp), [Aura](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Add_On/CAura.cpp)
 - CSkills_Hammer01 클래스에서 CAura 액터를 Spawn시키도록 구현
 - Timer와 Lambda 함수를 통해 일정 시간 동안 데미지가 지속적으로 캐릭터에게 들어가도록 구현하였고, 또 다른 Timer를 사용하여 일정 시간이 지나면 액터가 사라지는 함수가 호출되도록 구현
 
@@ -835,7 +839,7 @@ void ACAura::ReceiveParticleData_Implementation(const TArray<FBasicParticleData>
 	   Box->SetRelativeLocation(location);
 }
 ```
-#### ↳ [ACBackHole](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Add_On/CBlackHole.cpp) 
+#### ↳ [BackHole](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Add_On/CBlackHole.cpp) 
 - CSkills_Hammer01 클래스는 애니메이션 몽타주를 실행하면서 액터를 Spawn시키는 클래스이므로 Black Hole 스킬에도 사용
 - Tick( )함수에서 UKismetSystemLibrary::SphereTraceMultiByProfile( )함수를 이용하여 구를 그린 뒤 그 구에 다른 캐릭터가 충돌하면 캐릭터를 AddActorWorldOffset( )함수를 이용하여 블랙홀의 중심으로 이동
 - 이때 블랙홀에 UCapsuleComponent로 충돌체가 있고 그 충돌체에 충돌을 하면 Timer를 이용하여 계속해서 Damage를 입히도록 구현
@@ -939,7 +943,7 @@ void ACBlackHole::Delegate()
 }
 ```
 
-#### ↳ [USkill AnimSpawn](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_AnimSpawn.cpp), [ACAround](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Add_On/CAround.cpp)
+#### ↳ [Skill AnimSpawn](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_AnimSpawn.cpp), [Around](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Add_On/CAround.cpp)
 - CSkills_AnimSpawn 클래스에서 CAround 액터를 Spawn시키도록 구현
 - Timer를 사용하여 SendDamage() 함수를 연결하고, 액터와 충돌할 때마다 데미지를 가하도록 구현
 - CAround 액터는 플레이어를 기준으로 일정 거리 떨어져 원을 그리며 도는 스킬이므로, Tick() 함수에서 계속해서 위치를 계산하고 구한 위치로 변경하도록 구현
@@ -999,7 +1003,7 @@ void ACAround::Tick(float DeltaTime)
 }
 ```
 
-#### ↳ [USkill Bow Zooming](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Bow_Zomming.cpp), [FAnimData](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Bow_Zomming.h#L9-L26)
+#### ↳ [Skill Bow Zooming](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Bow_Zomming.cpp), [AnimData](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Bow_Zomming.h#L9-L26)
 - CSkills_Bow_Zooming 스킬은 Skill_Pressed()가 호출되면 SpringArm에 저장된 Length, SocketOffset, CameraLag, Location 값을 변수에 백업하고, FAimData 구조체의 값으로 변경하여 카메라가 Zoom In되는 효과를 구현
 - 이때 FTimeline과 UCurveVector를 사용하여 카메라의 이동이 부드럽게 진행되도록 구현
 - FTimeline 변수에 OnAiming() 함수를 연결하여 Zoom In 시 화살 시위를 당기는 애니메이션을 실행하도록 구현
@@ -1083,7 +1087,7 @@ void UCSkills_Bow_Zomming::OnAiming(FVector Output)
 }
 ```
 
-#### ↳ [USkill Meteor](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Meteor.cpp), [ACMeteor](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Defence.cpp)
+#### ↳ [Skill Meteor](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Meteor.cpp), [Meteor](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Defence.cpp)
 - CSkills_Meteor 클래스에서 CMeteor 액터를 Spawn시키도록 구현
 - CMeteor 액터는 나이아가라 이펙트에서 가져올 수 있는 Box 충돌체를 사용하여 충돌체의 크기를 계산
 - ReceiveParticleData_Implementation() 함수에서 메테오 충돌체에 캐릭터가 충돌하면 데미지를 입히고, 메테오가 폭발하는 나이아가라 이펙트가 재생되도록 구현
@@ -1165,7 +1169,7 @@ void ACMeteor::ReceiveParticleData_Implementation(const TArray<FBasicParticleDat
 }
 ```
 
-#### ↳ [USkill Ground Smash](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Hammer02.cpp), [ACSmash](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Add_On/CSmash.cpp)
+#### ↳ [Skill Ground Smash](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Hammer02.cpp), [Smash](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Add_On/CSmash.cpp)
 - CSkills_Hammer02 클래스는 UCTargetComponent를 사용하여 타겟을 설정하고, 설정한 타겟과 스킬을 사용하는 캐릭터 사이의 거리를 계산한 후, AddActorWorldOffset() 함수를 사용하여 위치를 이동시켜 땅을 내리치는 스킬로 구현
 - CSmash 액터는 AnimNotify를 사용하여 End_Skill() 함수가 호출될 때 Spawn되도록 구현
 - CSmash 액터는 나이아가라 이펙트의 크기만큼 충돌체를 생성하여, 그 범위 내에 있는 캐릭터들이 모두 데미지를 입도록 구현
@@ -1249,7 +1253,7 @@ void ACSmash::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AA
 }
 ```
 
-#### ↳ [USkill AirCombo](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_AirCombo.cpp)
+#### ↳ [Skill AirCombo](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_AirCombo.cpp)
 - CSkills_AirCombo 클래스는 CDoAction_Combo 클래스에서 콤보 공격을 구현한 방식과 유사하게 구현
 - 스킬이 시작되면 기존 충돌체의 델리게이트 연결을 끊고, 새로운 충돌체를 생성하여 더 넓은 범위로 충돌이 발생하도록 구현
 - 공중으로 띄우기 위해 LaunchCharacter() 함수를 사용하였고, AnimNotify를 이용해 애니메이션 몽타주마다 다른 방식으로 Launch를 적용
@@ -1317,7 +1321,7 @@ void UCSkills_AirCombo::DrawCollision()
 }
 ```
 
-#### ↳ [USkill Parry](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Defence.cpp)
+#### ↳ [Skill Parry](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Weapon/Skills/CSkills_Defence.cpp)
 - CSkills_Defence 클래스는 스킬이 시작되면 기존 충돌체의 델리게이트 연결을 끊고, CreateCollision() 함수에서 새로운 충돌체를 생성하도록 구현
 - 생성된 충돌체는 OnComponentBeginOverlap을 UCSkills_Defence::OnComponentBeginOverlap() 함수와 연결하여, 충돌 시 새로운 애니메이션 몽타주가 실행
 - 다른 캐릭터의 무기와 충돌체가 충돌하면 현재 실행 중인 애니메이션 몽타주의 남은 시간을 저장하고, 새로운 애니메이션 몽타주를 실행
@@ -1412,7 +1416,7 @@ void UCSkills_Defence::DestroyCollision()
 
 #### ↳ MontageComponent 
 
-- [FMontageData](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CMontagesComponent.h#L11-L22)
+- [MontageData](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CMontagesComponent.h#L11-L22)
     - Montage Component에 있는 FMontagesData 구조체는 FTableRowBase를 상속받아 구현
     - 데이터 테이블 구현시 MontagesData라는 이름으로 검색하여, 구조체의 정보를 토대로 값을 가져올 수 있는 데이터 테이블을 구현
     - 구조체의 정보는 StateComponent에 만들어 놓은 Enum 타입의 정보 중 한 가지 타입으로 설정한 뒤, 캐릭터의 상태가 설정해 놓은 상태일 때 저장된 몽타주를 설정한 속도로 실행할 수 있는 정보를 가진 구조체
@@ -1439,7 +1443,7 @@ public:
 		float PlayRate = 1.0f;
 };
 ```
-- [UCMontageComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CMontagesComponent.cpp#L54-L115)
+- [MontageComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CMontagesComponent.cpp#L54-L115)
     - 데이터 테이블을 통해 데이터를 더 편리하고 직관적으로 관리할 수 있게 구현
     - 캐릭터가 Component를 객체지향 5대 원칙 중 개방-폐쇄 원칙에 위배되지 않도록, 코드 수정 없이 기능을 변경할 수 있게 구현
         <table>
@@ -1508,8 +1512,8 @@ void UCMontagesComponent::PlayAnimMontage(EStateType InType)
 }
 ```
 
-#### ↳ CZoomComponent
-- [UCZoomComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CZoomComponent.cpp)
+#### ↳ ZoomComponent
+- [ZoomComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CZoomComponent.cpp)
     - 마우스 휠을 입력시 TargetArmLength를 변화시켜 카메라가 이동하도록 구현
     - FMath::Clamp() 함수를 사용하여 카메라 이동이 자연스럽게 이루어지도록 구현
 
@@ -1565,8 +1569,8 @@ void UCZoomComponent::SetZoomValue(float InValue)
 }
 ```
 
-#### ↳ CTargetComponent
-- [UCTargetComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CTargetComponent.cpp)
+#### ↳ TargetComponent
+- [TargetComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CTargetComponent.cpp)
     - 키 입력 시 카메라 안에 들어오는 캐릭터들 중 일정 범위 내에서 하나의 캐릭터에 카메라를 고정하는 기능을 하는 컴포넌트
     - UKismetSystemLibrary::SphereTraceMultiByProfile() 함수를 사용하여 일정 범위 내에서 Hit된 캐릭터들을 가져옴
     - Hit된 캐릭터들을 이용해 UCBF_NearlyAngle::GetNearlyFrontAngle() 함수에서 하나를 선택해 리턴함
@@ -1646,7 +1650,7 @@ void UCTargetComponent::TickTarget()
         InterpSpeed));
 }
 ```
-- [UCBF_NearlyAngle](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Utilities/CBF_NearlyAngle.cpp)
+- [BF_NearlyAngle](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Utilities/CBF_NearlyAngle.cpp)
     - UCBF_NearlyAngle::GetNearlyFrontAngle 함수를 통해 UCTargetComponent에서 전달된 캐릭터들과 플레이어 사이의 내적을 계산하여, 가장 가까운 캐릭터를 반환하도록 구현
 ```cpp
 ACharacter* UCBF_NearlyAngle::GetNearlyFrontAngle(ACharacter* InCharacter, TArray<ACharacter*> InArray)
@@ -1672,7 +1676,7 @@ ACharacter* UCBF_NearlyAngle::GetNearlyFrontAngle(ACharacter* InCharacter, TArra
 	   return candidate;
 }
 ```
-#### ↳ UCFeetComponent
+#### ↳ FeetComponent
 <table>
     <tr>
         <td align="center">
@@ -1685,7 +1689,7 @@ ACharacter* UCBF_NearlyAngle::GetNearlyFrontAngle(ACharacter* InCharacter, TArra
     </td>
 </table> 
 
-- [FFeetData](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CFeetComponent.h#L8-L28)
+- [FeetData](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CFeetComponent.h#L8-L28)
     - 캐릭터의 AnimInstance에서 IK를 위해 가져와야 할 값을 묶은 구조체
     <table>
         <tr>
@@ -1719,7 +1723,7 @@ public:
 };
 ```
 
-- [UCFeetComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CFeetComponent.cpp#L24-82)
+- [FeetComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CFeetComponent.cpp#L24-82)
     - IK를 적용할 소켓을 가져와 Trace() 함수에서 소켓의 X, Y 값과 캐릭터의 위치 Z 값을 합쳐 새로운 벡터를 만들어 LineTrace가 시작할 벡터를 생성
     - 새로 구한 벡터의 Z 값에서 캡슐의 절반 높이와 TraceDistance 값을 각각 빼주어, 발보다 조금 더 아래까지 구한 값을 Z로 설정하고, 소켓의 X, Y 값과 합쳐 LineTrace가 끝날 벡터 생성
     - 두 벡터를 이용하여 UKismetSystemLibrary::LineTraceSingle() 함수로 Hit된 ImpactPoint와 TraceEnd의 차이를 OffsetDistance만큼 보정하고, TraceDistance만큼 빼주어 소켓이 올라가야 할 거리를 구함
@@ -1773,7 +1777,7 @@ void UCFeetComponent::Trace(FName InName, float& OutDistance, FRotator& OutRotat
 	   OutRotation = FRotator(pitch, 0, roll);
 }
 ```
-- [UCAnimInstace](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Characters/CAnimInstance.cpp#L35-L88)
+- [AnimInstace](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Characters/CAnimInstance.cpp#L35-L88)
     - CFeetComponent에서 구한 값을 FFeetData 변수에 저장한 후, CAnimInstance 클래스에서 이를 가져와 블루프린트에서 Transform Bone과 TwoBoneIK에 적용하여 자연스러운 애니메이션을 구현하기 위해 IK를 적용
     -조금 더 자연스러운 애니메이션을 위해 걷거나 뛰는 애니메이션마다 Left/Right Foot이라는 이름의 Curve를 만들어 Alpha 값으로 사용하고, 이동 시 어색한 애니메이션이 자연스럽게 변화하도록 구현
     <table>
@@ -1805,15 +1809,15 @@ void UCAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 ```
 
 #### ↳ 이외의 Component
-- [UCStateComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CStateComponent.cpp)
+- [StateComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CStateComponent.cpp)
     - Idle, Hit, Equipment 등 행동을 관리하는 컴포넌트로 구현
-- [UCStatusComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CStatusComponent.cpp)
+- [StatusComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CStatusComponent.cpp)
     - 캐릭터들의 체력, MP, Stamina를 관리하고 변화를 적용하는 컴포넌트로 구현
-- [UCWeaponComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CWeaponComponent.cpp)
+- [WeaponComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CWeaponComponent.cpp)
     - 캐릭터가 무기 장착, 공격 및 스킬 사용시 무기에 직접 명령을 내리는 것이 아니라 이 컴포넌트를 통해 명령을 내리도록 구현
 
 #### ↳ Player Input
-- [ACPlayer 설정](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Characters/CPlayer.h#L35-L76)
+- [Player 설정](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Characters/CPlayer.h#L35-L76)
     - 플레이어의 입력은 언리얼 엔진 5에서 새롭게 추가된 EnhancedInput.InputMappingContext와 EnhancedInput.InputAction을 이용하여 구현
     - CPlayer에서 직렬화된 변수로 블루프린트에서 만든 EnhancedInput.InputAction을 연결해 주었고, EnhancedInput.InputMappingContext에서는 원하는 키 입력과 트리거 등에 의해 EnhancedInput.InputAction이 호출될 수 있도록 구현
 
@@ -1944,7 +1948,7 @@ void UCAnimNotify_EndState::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 ### ✔ 구현 내용
 
 #### ↳ 이벤트 & 시네마틱
-- [ACPortal](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Item/CPortal.cpp)
+- [Portal](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Item/CPortal.cpp)
 	- CPotal 클래스는 플레이어가 충돌하면 시네마틱을 재생하고, 시네마틱이 끝난 후 보스가 있는 레벨로 이동하는 액터
 	- 플레이어가 충돌하면 ULevelSequencePlayer 클래스에 있는 델리게이트를 End() 함수와 연결하여 시네마틱이 끝나면 End() 함수가 실행되도록 하였고, 이때 DisableInput() 함수를 통해 모든 입력을 차단하여 시네마틱 중에 다른 입력이 되지 않도록 구현
 	- 또한 UGameplayStatics::GetAllActorsOfClass() 함수로 액터를 가져와 ACharacter 클래스와 ACAttachment 클래스를 보이지 않게 하고, Tick() 함수를 멈추도록 하여 시네마틱 재생에 방해되지 않도록 구현
@@ -1996,7 +2000,7 @@ void ACPortal::End()
 }
 ```
 
-- [ACCinematicActor](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Item/CCinematicActor.cpp)
+- [CinematicActor](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Item/CCinematicActor.cpp)
 	- CCinematic 클래스는 CPotal 클래스와는 달리 파티클이나 메쉬 없이 보이지 않는 충돌체만 있는 액터로 구현
 	- 플레이어가 이 충돌체에 충돌하면 CPotal의 OnComponentBeginOverlap() 함수와 동일하게 동작하도록 구현
 	- End() 함수에서는 입력을 차단했던 것을 풀기 위해 EnableInput() 함수를 사용하여 입력이 가능하도록 하였고, UGameplayStatics::GetAllActorsOfClass() 함수로 보이지 않게 했던 ACharacter 클래스와 ACAttachment 클래스를 모두 보이게 하고, Tick() 함수도 다시 실행
