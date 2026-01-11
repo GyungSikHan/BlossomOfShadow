@@ -19,7 +19,7 @@
     - [↳ Weapon Asset](#-weapon-asset)
   - [Skills](#skills)
     - [↳ Skill](#-skill)
-    - [↳ Skill Aura, Aura](#-skill-aura,-aura)
+    - [↳ Skill Aura, Aura](#-skill-aura-aura)
     - [↳ BackHole](#-backhole)
     - [↳ Skill AnimSpawn, Around](#-skill-animspawn-around)
     - [↳ Skill Bow Zooming, AnimData](#-skill-bow-zomming-animdata)
@@ -33,16 +33,20 @@
     - [↳ TargetComponent](#-targetcomponent)
     - [↳ FeetComponent](#-feetcomponent)
     - [↳ 이외의 Component](#-이외의-component)
-  - [PlayerInput](#plyaerinput)
-    - [설계 의도](#-설계-의도-4)
-    - [구현 내용](#-구현-내용-4)
+  - [Player Input](#plyaer-input)
+    - [↳ Player Input](#player-input)
   - [이벤트 & 시네마틱](#이벤트--시네마틱)
-    - [설계 의도](#-설계-의도-5)
-    - [구현 내용](#-구현-내용-5)
+    - [↳ Portal](#-portal)
+    - [↳ CinematicActor](#cinematicactor)
   - [UI](#ui)
-    - [설계 의도](#-설계-의도-6)
-    - [구현 내용](#-구현-내용-6)
+    - [↳ Title](#-title)
+    - [↳ Pause, Player](#-pause-player)
+    - [↳ Cross Hair](#-cross-hair)
+    - [↳ HUD/Boss HP Bar](#-hudboss-hp-bar)
+    - [↳ Weapon Quick Slot](#-weapon-quick-slot)
+    - [↳ 게임 결과 창](#-게임-결과-창)
 - [Troubleshooting](#troubleshooting)
+	- [1) 🎯 CAura 액터는 이펙트가 늘어나기 때문에 충돌체도 함께 늘어나야 했는데, 이 과정에서 문제가 발생](#-CAura-액터는-이펙트가-늘어나기-때문에-충돌체도-함께-늘어나야-했는데-이-과정에서-문제가-발생)
 - [Retrospective (느낀점)](#retrospective-느낀점)
 
 
@@ -1956,13 +1960,12 @@ protected:
 
 ### ✔ 구현 내용
 
-#### ↳ 이벤트 & 시네마틱
-- [Portal](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Item/CPortal.cpp)
-	- CPotal 클래스는 플레이어가 충돌하면 시네마틱을 재생하고, 시네마틱이 끝난 후 보스가 있는 레벨로 이동하는 액터
-	- 플레이어가 충돌하면 ULevelSequencePlayer 클래스에 있는 델리게이트를 End() 함수와 연결하여 시네마틱이 끝나면 End() 함수가 실행되도록 하였고, 이때 DisableInput() 함수를 통해 모든 입력을 차단하여 시네마틱 중에 다른 입력이 되지 않도록 구현
-	- 또한 UGameplayStatics::GetAllActorsOfClass() 함수로 액터를 가져와 ACharacter 클래스와 ACAttachment 클래스를 보이지 않게 하고, Tick() 함수를 멈추도록 하여 시네마틱 재생에 방해되지 않도록 구현
-	- End() 함수에서는 UGameplayStatics::OpenLevel() 함수를 사용하여 보스가 있는 레벨로 이동하도록 구현하였고, 이때 플레이어의 체력을 저장하여 보스 레벨로 이동할 때 동일한 체력 상태를 유지할 수 있도록 구현
-	<table>
+#### ↳ [Portal](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Item/CPortal.cpp)
+- CPotal 클래스는 플레이어가 충돌하면 시네마틱을 재생하고, 시네마틱이 끝난 후 보스가 있는 레벨로 이동하는 액터
+- 플레이어가 충돌하면 ULevelSequencePlayer 클래스에 있는 델리게이트를 End() 함수와 연결하여 시네마틱이 끝나면 End() 함수가 실행되도록 하였고, 이때 DisableInput() 함수를 통해 모든 입력을 차단하여 시네마틱 중에 다른 입력이 되지 않도록 구현
+- 또한 UGameplayStatics::GetAllActorsOfClass() 함수로 액터를 가져와 ACharacter 클래스와 ACAttachment 클래스를 보이지 않게 하고, Tick() 함수를 멈추도록 하여 시네마틱 재생에 방해되지 않도록 구현
+- End() 함수에서는 UGameplayStatics::OpenLevel() 함수를 사용하여 보스가 있는 레벨로 이동하도록 구현하였고, 이때 플레이어의 체력을 저장하여 보스 레벨로 이동할 때 동일한 체력 상태를 유지할 수 있도록 구현
+<table>
     	<tr>
         	<td align="center">
             	<img src="Image/image 270.png" width="500"><br>
@@ -2009,11 +2012,11 @@ void ACPortal::End()
 }
 ```
 
-- [CinematicActor](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Item/CCinematicActor.cpp)
-	- CCinematic 클래스는 CPotal 클래스와는 달리 파티클이나 메쉬 없이 보이지 않는 충돌체만 있는 액터로 구현
-	- 플레이어가 이 충돌체에 충돌하면 CPotal의 OnComponentBeginOverlap() 함수와 동일하게 동작하도록 구현
-	- End() 함수에서는 입력을 차단했던 것을 풀기 위해 EnableInput() 함수를 사용하여 입력이 가능하도록 하였고, UGameplayStatics::GetAllActorsOfClass() 함수로 보이지 않게 했던 ACharacter 클래스와 ACAttachment 클래스를 모두 보이게 하고, Tick() 함수도 다시 실행
-	- 이렇게 구현하여 보스 방 입구에서 시네마틱이 재생되고, 시네마틱이 끝난 후에는 보스와 전투를 할 수 있게 구현
+#### ↳ [CinematicActor](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Item/CCinematicActor.cpp)
+- CCinematic 클래스는 CPotal 클래스와는 달리 파티클이나 메쉬 없이 보이지 않는 충돌체만 있는 액터로 구현
+- 플레이어가 이 충돌체에 충돌하면 CPotal의 OnComponentBeginOverlap() 함수와 동일하게 동작하도록 구현
+- End() 함수에서는 입력을 차단했던 것을 풀기 위해 EnableInput() 함수를 사용하여 입력이 가능하도록 하였고, UGameplayStatics::GetAllActorsOfClass() 함수로 보이지 않게 했던 ACharacter 클래스와 ACAttachment 클래스를 모두 보이게 하고, Tick() 함수도 다시 실행
+- 이렇게 구현하여 보스 방 입구에서 시네마틱이 재생되고, 시네마틱이 끝난 후에는 보스와 전투를 할 수 있게 구현
 ```cpp
 void ACCinematicActor::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -2377,8 +2380,8 @@ void UCGameInstance::ShowResultUI(UWorld* InWorld, bool bPlayer)
 ```
 
 - [Boss Dead](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Characters/AI/CEnemy_AI.cpp#L117-L133), [Drap Item](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Item/CDrop_Item.cpp)
-- 보스가 죽었을 때는 플레이어와 다르게 바로 결과 창이 뜨지 않도록 구현
-- CDrop_Item 클래스를 사용하여 보스가 죽은 위치에 아이템 액터를 생성하게 하였으며, 이 액터에 충돌 시 결과 창이 뜨도록 구현
+	- 보스가 죽었을 때는 플레이어와 다르게 바로 결과 창이 뜨지 않도록 구현
+	- CDrop_Item 클래스를 사용하여 보스가 죽은 위치에 아이템 액터를 생성하게 하였으며, 이 액터에 충돌 시 결과 창이 뜨도록 구현
 
 <table>
     <tr>
@@ -2462,4 +2465,7 @@ void ACDrop_Item::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompone
 
 
 # **Retrospective (느낀점)**
-
+- Blossom Of Shadow를 제작하면서 게임 로직의 흐름에 대해 이해하는 계기가 되었음
+- 엔진 내부 코드와 공식 문서를 읽고 문제를 해결하면서 엔진에 대한 이해도가 높아졌음
+- 어렵고 잘 해결되지 않는 문제들을 해결하면서 문제 해결 능력을 길렀음
+- 이러한 과정들을 통해 단순히 엔진을 사용하는 방법뿐만 아니라 그래픽스 파이프라인, CS 등을 더욱 열심히 공부해야 내가 원하는 게임을 만들 수 있따는 것을 알게되어 힘들었지만 정말 재미있었음
