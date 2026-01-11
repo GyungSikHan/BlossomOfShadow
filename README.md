@@ -6,6 +6,7 @@
 - [🎥 게임 플레이 영상](#-게임-플레이-영상)
 - [📌 프로젝트 소개](#-프로젝트-소개)
 - [🎮 게임 개발](#-게임-개발)
+- [🎮 포트폴리오 링크](#-포트폴리오-링크)
 - [🖼 In-Game Screenshot](#-in-game-screenshot)
 - [🎮 Core System Implementation](#core-system-implementation)
   - [AI](#ai)
