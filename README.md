@@ -10,21 +10,30 @@
 - [🎮 Core System Implementation](#core-system-implementation)
   - [AI](#ai)
     - [↳ AI Controller](#-ai-controller)
-    - [↳ BehaviorTree](#behaviortree)
-    - [↳ EQS](#eqs)
+    - [↳ BehaviorTree](#-behaviortree)
+    - [↳ EQS](#-eqs)
   - [Weapon](#weapon)
-    - [↳ Attachment](#attachment)
-    - [↳ Equipment](#equipment)
-    - [↳ BasicCombo](#basic-combo)
-    - [↳ Weapon Asset](#weapon-asset)
+    - [↳ Attachment](#-attachment)
+    - [↳ Equipment](#-equipment)
+    - [↳ BasicCombo](#-basic-combo)
+    - [↳ Weapon Asset](#-weapon-asset)
   - [Skills](#skills)
-    - [↳ Skill](#skill)
-    - [↳ Skill Aura, ACAura](#skill-aura,-acaura)
-    - [↳ BackHole](#backhole)
-  - [Component](#component)
-    - [설계 의도](#-설계-의도-3)
-    - [구현 내용](#-구현-내용-3)
+    - [↳ Skill](#-skill)
+    - [↳ Skill Aura, ACAura](#-skill-aura-acaura)
+    - [↳ BackHole](#-backhole)
+    - [↳ Skill AnimSpawn, Around](#-skill-animspawn-around)
+    - [↳ Skill Bow Zooming, AnimData](#-skill-bow-zomming-animdata)
+	- [↳ Skill Meteor, Meteor](#-skill-meteor-meteor)
+	- [↳ Skill Ground Smash, Smash](#-skill-ground-smash-smash)
+  	- [↳ Skill AirCombo](#-skill-aircombo)
+   	- [↳ Skill Parry](#-skill-parry)  
   - [Component/Interface](#componentinterface)
+    - [↳ MontageComponent](#-montagecomponent)
+    - [↳ ZoomComponent](#-zoomcomponent)
+    - [↳ TargetComponent](#-targetcomponent)
+    - [↳ FeetComponent](#-feetcomponent)
+    - [↳ 이외의 Component](#-이외의-component)
+  - [PlayerInput](#plyaerinput)
     - [설계 의도](#-설계-의도-4)
     - [구현 내용](#-구현-내용-4)
   - [이벤트 & 시네마틱](#이벤트--시네마틱)
@@ -1408,7 +1417,7 @@ void UCSkills_Defence::DestroyCollision()
 }
 ```
 
-## Component
+## Component/Interface
 
 ### ✔ 설계 의도
 
@@ -1816,6 +1825,69 @@ void UCAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 - [WeaponComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CWeaponComponent.cpp)
     - 캐릭터가 무기 장착, 공격 및 스킬 사용시 무기에 직접 명령을 내리는 것이 아니라 이 컴포넌트를 통해 명령을 내리도록 구현
 
+#### ↳ Character Interface  
+- [ICharacter](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Characters/Interface/ICharacter.h#L7-L22), [CAnimNotify_EndState](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Notifys/CAnimNotify_EndState.cpp#L9-L47)
+    - ICharacter는 플레이어, 몬스터, 보스 등에서 동일하게 사용할 수 있는 애니메이션 몽타주 함수를 인터페이스 화
+    - ICharacter 인터페이스를 상속받아 구현된 CCharacter 클래스의 함수들은 애니메이션 몽타주가 끝날 때 이를 알리는 Notify 클래스를 만들어, Switch 문을 통해 현재 상태에 맞는 case에서 함수 호출
+    - 인터페이스 함수들이 호출되면 EStateType을 Idle 상태로 되돌리는 등의 로직을 CCharacter에 구현하여, 다른 행동을 할 수 있도록 함
+    
+    
+        <table>
+            <tr>
+                <td align="center">
+                    <img src="https://github.com/user-attachments/assets/ec97e56b-06cf-4414-8f8b-686f31f5f0ab" width="400"><br>
+                    <em>Back Step 몽타주 재생 후 상태 변경</em>
+                </td>
+                <td align="center">
+                    <img src="https://github.com/user-attachments/assets/e58a97d8-bf83-4bd1-b8ae-6486e2815c52" width="380"><br>
+                    <em>Dead 몽타주 재생 후 상태 변경</em>
+                </td>
+            </tr>
+        </table>
+
+```cpp
+void UCAnimNotify_EndState::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
+	const FAnimNotifyEventReference& EventReference)
+{
+....
+
+	IICharacter* character = Cast<IICharacter>(MeshComp->GetOwner());
+
+	if (character == nullptr)
+		return;
+
+	switch (StateType)
+	{
+	case EStateType::BackStep:
+		character->End_BackStep();
+		break;
+	case EStateType::Roll_F:
+	case EStateType::Roll_B:
+	case EStateType::Roll_L:
+	case EStateType::Roll_R:
+	case EStateType::Roll_FR:
+	case EStateType::Roll_FL:
+	case EStateType::Roll_BR:
+	case EStateType::Roll_BL:
+		character->End_Roll();
+		break;
+	case EStateType::Hitted:
+		character->End_Hitted();
+		break;
+	case EStateType::Dead:
+		character->End_Dead();
+		break;
+	default:
+		break;
+	}
+}
+```
+
+## Plyaer Input
+### ✔ 설계 의도
+
+### ✔ 구현 내용
+
 #### ↳ Player Input
 - [Player 설정](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Characters/CPlayer.h#L35-L76)
     - 플레이어의 입력은 언리얼 엔진 5에서 새롭게 추가된 EnhancedInput.InputMappingContext와 EnhancedInput.InputAction을 이용하여 구현
@@ -1876,69 +1948,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputMappingContext> DefaultMappingContext;
     ....
-}
-```
-
-## Component/Interface
-### ✔ 설계 의도
-
-### ✔ 구현 내용
-
-#### ↳ Character Interface  
-- [ICharacter](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Characters/Interface/ICharacter.h#L7-L22), [CAnimNotify_EndState](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Notifys/CAnimNotify_EndState.cpp#L9-L47)
-    - ICharacter는 플레이어, 몬스터, 보스 등에서 동일하게 사용할 수 있는 애니메이션 몽타주 함수를 인터페이스 화
-    - ICharacter 인터페이스를 상속받아 구현된 CCharacter 클래스의 함수들은 애니메이션 몽타주가 끝날 때 이를 알리는 Notify 클래스를 만들어, Switch 문을 통해 현재 상태에 맞는 case에서 함수 호출
-    - 인터페이스 함수들이 호출되면 EStateType을 Idle 상태로 되돌리는 등의 로직을 CCharacter에 구현하여, 다른 행동을 할 수 있도록 함
-    
-    
-        <table>
-            <tr>
-                <td align="center">
-                    <img src="https://github.com/user-attachments/assets/ec97e56b-06cf-4414-8f8b-686f31f5f0ab" width="400"><br>
-                    <em>Back Step 몽타주 재생 후 상태 변경</em>
-                </td>
-                <td align="center">
-                    <img src="https://github.com/user-attachments/assets/e58a97d8-bf83-4bd1-b8ae-6486e2815c52" width="380"><br>
-                    <em>Dead 몽타주 재생 후 상태 변경</em>
-                </td>
-            </tr>
-        </table>
-
-```cpp
-void UCAnimNotify_EndState::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-	const FAnimNotifyEventReference& EventReference)
-{
-....
-
-	IICharacter* character = Cast<IICharacter>(MeshComp->GetOwner());
-
-	if (character == nullptr)
-		return;
-
-	switch (StateType)
-	{
-	case EStateType::BackStep:
-		character->End_BackStep();
-		break;
-	case EStateType::Roll_F:
-	case EStateType::Roll_B:
-	case EStateType::Roll_L:
-	case EStateType::Roll_R:
-	case EStateType::Roll_FR:
-	case EStateType::Roll_FL:
-	case EStateType::Roll_BR:
-	case EStateType::Roll_BL:
-		character->End_Roll();
-		break;
-	case EStateType::Hitted:
-		character->End_Hitted();
-		break;
-	case EStateType::Dead:
-		character->End_Dead();
-		break;
-	default:
-		break;
-	}
 }
 ```
 
