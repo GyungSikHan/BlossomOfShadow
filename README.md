@@ -33,11 +33,12 @@
     - [↳ TargetComponent](#-targetcomponent)
     - [↳ FeetComponent](#-feetcomponent)
     - [↳ 이외의 Component](#-이외의-component)
+    - [↳ Character Interface](#-character-interface)
   - [Player Input](#plyaer-input)
-    - [↳ Player Input](#player-input)
+    - [↳ Player Input](#-player-input)
   - [이벤트 & 시네마틱](#이벤트--시네마틱)
     - [↳ Portal](#-portal)
-    - [↳ CinematicActor](#cinematicactor)
+    - [↳ CinematicActor](#-cinematicactor)
   - [UI](#ui)
     - [↳ Title](#-title)
     - [↳ Pause, Player](#-pause-player)
@@ -46,7 +47,7 @@
     - [↳ Weapon Quick Slot](#-weapon-quick-slot)
     - [↳ 게임 결과 창](#-게임-결과-창)
 - [Troubleshooting](#troubleshooting)
-	- [1) 🎯 CAura 액터는 이펙트가 늘어나기 때문에 충돌체도 함께 늘어나야 했는데, 이 과정에서 문제가 발생](#-CAura-액터는-이펙트가-늘어나기-때문에-충돌체도-함께-늘어나야-했는데-이-과정에서-문제가-발생)
+	- [1) 🎯 CAura 액터는 이펙트가 늘어나기 때문에 충돌체도 함께 늘어나야 했는데, 이 과정에서 문제가 발생](#--CAura-액터는-이펙트가-늘어나기-때문에-충돌체도-함께-늘어나야-했는데-이-과정에서-문제가-발생)
 - [Retrospective (느낀점)](#retrospective-느낀점)
 
 
@@ -1525,12 +1526,11 @@ void UCMontagesComponent::PlayAnimMontage(EStateType InType)
 }
 ```
 
-#### ↳ ZoomComponent
-- [ZoomComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CZoomComponent.cpp)
-    - 마우스 휠을 입력시 TargetArmLength를 변화시켜 카메라가 이동하도록 구현
-    - FMath::Clamp() 함수를 사용하여 카메라 이동이 자연스럽게 이루어지도록 구현
+#### ↳ [ZoomComponent](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Components/CZoomComponent.cpp)
+- 마우스 휠을 입력시 TargetArmLength를 변화시켜 카메라가 이동하도록 구현
+- FMath::Clamp() 함수를 사용하여 카메라 이동이 자연스럽게 이루어지도록 구현
 
-    <table>
+<table>
         <tr>
             <td align="center">
                 <img src="https://github.com/user-attachments/assets/10de77b9-d917-4c36-bbd5-aa0e5ce67d77" width="500"><br>
