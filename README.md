@@ -82,12 +82,16 @@
 > - **기술**: C++, Unreal Engine 5.4, Blueprint
 </aside>
 
-## 🖼 In-Game Screenshot
+# 🖼 In-Game Screenshot
+![alt text](Image/KakaoTalk_20260112_051056121_01.jpg)
+![alt text](Image/KakaoTalk_20260112_051056121_02.jpg)
 
 # 🎮 **Core System Implementation**
 
 ## AI
 ### ✔ 설계 의도
+- CCharacter 클래스를 상속받아 범용성 있고 쉬운 AI를 추가하고, AIController의 Team ID를 이용하여 Team 전투가 가능하도록 구현하려 함
+- EQS를 활용하여 기본 공격만 하는 것이 아닌 다양한 패턴이 나올 수 있도록 함
 
 ### ✔ 구현 내용
 #### ↳ [AI Controller](https://github.com/GyungSikHan/BlossomOfShadow/blob/main/Source/RPG/Characters/AI/CAIController.cpp#L66-L137)
@@ -269,6 +273,9 @@ void UCEQS_Context_AttackTarget::ProvideContext(FEnvQueryInstance& QueryInstance
 
 ## Weapon
 ### ✔ 설계 의도
+- Attachment 클래스를 활용하여 범용성 있고 쉽게 무기를 만들도록 함
+- Attachment안에 AttachTo 함수를 활용하여 C++ 클래스뿐만 아니라 Blueprint에서도 무기를 장착하기 쉽게 구현하도록 함
+- Equip을 따로하는 클래스를 만들어 단일 책임 원칙을 지키려함
 
 ### ✔ 구현 내용
 
@@ -742,6 +749,8 @@ void UCWeaponAsset::PostEditChangeChainProperty(FPropertyChangedChainEvent& Prop
 
 ## Skills
 ### ✔ 설계 의도
+- Skill은 무기와 별개로 발동되는 클래스로 단일 책임 원칙을 지키려 노력함
+- CSKill를 활용하여 범용성 있고 쉽게 스킬을 만들고 추가할 수 있도록 함
 
 ### ✔ 구현 내용
 
@@ -1424,6 +1433,7 @@ void UCSkills_Defence::DestroyCollision()
 ## Component/Interface
 
 ### ✔ 설계 의도
+- 기능을 재사용하기 쉽고, 분리, 조합하여 Actor를 가볍고 유연하게 만들기 위해 사용
 
 ### ✔ 구현 내용
 
@@ -1888,6 +1898,7 @@ void UCAnimNotify_EndState::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 
 ## Plyaer Input
 ### ✔ 설계 의도
+- 기존의 Input 방식을 벗어나 새로운 Input 방식인 Enhanced Input을 사용하므로써 키 매핑, Trigger등 다양한 대응을 하기위해 이 방식을 사용
 
 ### ✔ 구현 내용
 
@@ -1956,6 +1967,8 @@ protected:
 
 ## 이벤트 & 시네마틱
 ### ✔ 설계 의도
+- 기본 맵에서 Boss가 있는 맵으로 이동하기 위해 Portal이라는 기능을 만들어 재미 요소를 더함
+- 맵이 이동하면서 생기는 딜레이를 시네마틱이라는 재미 요소를 집어 넣어 즐거움을 추가함
 
 ### ✔ 구현 내용
 
@@ -2073,6 +2086,7 @@ void ACCinematicActor::End()
 
 ## UI
 ### ✔ 설계 의도
+- 다양한 상황에 대처하고, 유저에게 즉각적이고 빠른 정보를 줄 수 있게 구현
 
 ### ✔ 구현 내용
 
