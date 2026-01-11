@@ -47,7 +47,6 @@
     - [↳ Weapon Quick Slot](#-weapon-quick-slot)
     - [↳ 게임 결과 창](#-게임-결과-창)
 - [Troubleshooting](#troubleshooting)
-	- [1) 🎯 CAura 액터는 이펙트가 늘어나기 때문에 충돌체도 함께 늘어나야 했는데, 이 과정에서 문제가 발생](#--CAura-액터는-이펙트가-늘어나기-때문에-충돌체도-함께-늘어나야-했는데-이-과정에서-문제가-발생)
 - [Retrospective (느낀점)](#retrospective-느낀점)
 
 
