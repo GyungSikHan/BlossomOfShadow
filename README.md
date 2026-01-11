@@ -49,7 +49,7 @@
 <table>
     <tr>
         <td align="center">
-            <img src="image/image 193.png" width="400"><br>
+            <img src="imgae/image 193.png" width="400"><br>
             <em>AI Perception</em>
         </td>
 	</tr>
