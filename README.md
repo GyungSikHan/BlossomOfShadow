@@ -71,9 +71,6 @@
   </a>
 </p>
 
-# 🎮 포트폴리오 링크
-https://drive.google.com/file/d/1LRnWCWV3obmQORMKDY8yV8YeIxzddGuA/view?usp=sharing
-
 # 📌 프로젝트 소개
 
 “Blossom of Shadows”는 언리얼 엔진 기반으로 제작된 RPG 게임으로, 광활한 맵에서 외계에 적들을 물리치고 포탈을 넘어 외계 행성의 적을 쓰러트리는 이야기를 담고 있으며, 플레이어는 수많은 적들을 물리치고 살아남아 세상을 지켜내야 합니다.
@@ -85,6 +82,9 @@ https://drive.google.com/file/d/1LRnWCWV3obmQORMKDY8yV8YeIxzddGuA/view?usp=shari
 > - **목적**: 언리얼 엔진과 C++을 공부한 것을 바탕으로 처음부터 끝까지 혼자서 게임을 개발하는 경험을 통해 엔진의 사용 방법을 익히기 위해 게임을 제작
 > - **기술**: C++, Unreal Engine 5.4, Blueprint
 </aside>
+
+# 🎮 포트폴리오 링크
+https://drive.google.com/file/d/1LRnWCWV3obmQORMKDY8yV8YeIxzddGuA/view?usp=sharing
 
 # 🖼 In-Game Screenshot
 ![alt text](Image/KakaoTalk_20260112_051056121_01.jpg)
