@@ -1,4 +1,12 @@
 # **Blossom Of Shadow**
+<table>
+    <tr>
+        <td align="center">
+            <img src="Image/image 171.png" width="1000"><br>
+            <em>Title</em>
+        </td>
+    </tr>
+</table>
 
 ## 📌 Table of Contents
 
